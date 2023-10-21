@@ -13,14 +13,24 @@ export const head: DocumentHead = {
 
 type SquareStore = {
   squares: string[];
+  xIsNext: boolean;
   check: QRL<(this: SquareStore, index: number) => void>;
 };
 
 export default component$(() => {
   const state = useStore<SquareStore>({
     squares: Array(9).fill(""),
+    xIsNext: true,
     check: $(function (this: SquareStore, index: number) {
-      this.squares[index] = "X";
+      if (this.squares[index]) {
+        return;
+      }
+      if (this.xIsNext) {
+        this.squares[index] = "X";
+      } else {
+        this.squares[index] = "O";
+      }
+      this.xIsNext = !this.xIsNext;
     }),
   });
 
