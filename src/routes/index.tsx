@@ -15,14 +15,18 @@ type SquareStore = {
   squares: string[];
   xIsNext: boolean;
   history: string[][];
+  currentMove: number;
   handleClick: QRL<(this: SquareStore, index: number) => void>;
   handlePlay: QRL<(this: SquareStore, nextSquares: string[]) => void>;
+  jumpTo: QRL<(this: SquareStore, move: number) => void>;
 };
 
 export default component$(() => {
   const state = useStore<SquareStore>({
     squares: Array(9).fill(""),
     xIsNext: true,
+    history: [Array(9).fill("")],
+    currentMove: 0,
     handleClick: $(function (this: SquareStore, index: number) {
       if (this.squares[index] || calculateWinner(this.squares)) {
         return;
@@ -35,12 +39,20 @@ export default component$(() => {
       }
       this.handlePlay(nextSquares);
     }),
-
-    history: [Array(9).fill("")],
     handlePlay: $(function (this: SquareStore, nextSquares: string[]) {
-      this.history = [...this.history, nextSquares];
-      this.xIsNext = !this.xIsNext;
+      const nextHistory = [
+        ...this.history.slice(0, this.currentMove + 1),
+        nextSquares,
+      ];
+      this.history = nextHistory;
+      this.currentMove = nextHistory.length - 1;
       this.squares = nextSquares;
+      this.xIsNext = !this.xIsNext;
+    }),
+    jumpTo: $(function (this: SquareStore, move: number) {
+      this.currentMove = move;
+      this.xIsNext = move % 2 === 0;
+      this.squares = this.history[move];
     }),
   });
 
@@ -53,7 +65,7 @@ export default component$(() => {
     }
     return (
       <li key={move}>
-        <button onClick$={() => console.log(move)}>{description}</button>
+        <button onClick$={() => state.jumpTo(move)}>{description}</button>
       </li>
     );
   });
