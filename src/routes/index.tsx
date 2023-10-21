@@ -1,4 +1,4 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { component$, useStore, $, type QRL } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 
 export const head: DocumentHead = {
@@ -11,33 +11,76 @@ export const head: DocumentHead = {
   ],
 };
 
+type SquareStore = {
+  squares: string[];
+  check: QRL<(this: SquareStore, index: number) => void>;
+};
+
 export default component$(() => {
+  const state = useStore<SquareStore>({
+    squares: Array(9).fill(""),
+    check: $(function (this: SquareStore, index: number) {
+      this.squares[index] = "X";
+    }),
+  });
+
   return (
     <>
       <div class="board-row">
-        <Square />
-        <Square />
-        <Square />
+        <Square
+          value={state.squares[0]}
+          onSquareClick={$(() => state.check(0))}
+        />
+        <Square
+          value={state.squares[1]}
+          onSquareClick={$(() => state.check(1))}
+        />
+        <Square
+          value={state.squares[2]}
+          onSquareClick={$(() => state.check(2))}
+        />
       </div>
       <div class="board-row">
-        <Square />
-        <Square />
-        <Square />
+        <Square
+          value={state.squares[3]}
+          onSquareClick={$(() => state.check(3))}
+        />
+        <Square
+          value={state.squares[4]}
+          onSquareClick={$(() => state.check(4))}
+        />
+        <Square
+          value={state.squares[5]}
+          onSquareClick={$(() => state.check(5))}
+        />
       </div>
       <div class="board-row">
-        <Square />
-        <Square />
-        <Square />
+        <Square
+          value={state.squares[6]}
+          onSquareClick={$(() => state.check(6))}
+        />
+        <Square
+          value={state.squares[7]}
+          onSquareClick={$(() => state.check(7))}
+        />
+        <Square
+          value={state.squares[8]}
+          onSquareClick={$(() => state.check(8))}
+        />
       </div>
     </>
   );
 });
 
-const Square = component$(() => {
-  const data = useSignal("");
+interface SquareProps {
+  value: string;
+  onSquareClick: () => Promise<void>;
+}
+
+const Square = component$<SquareProps>(({ value, onSquareClick }) => {
   return (
-    <button class="square" onClick$={() => (data.value = "X")}>
-      {data}
+    <button class="square" onClick$={onSquareClick}>
+      {value}
     </button>
   );
 });
