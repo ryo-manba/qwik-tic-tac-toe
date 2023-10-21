@@ -13,7 +13,6 @@ export const head: DocumentHead = {
 
 type SquareStore = {
   squares: string[];
-  xIsNext: boolean;
   history: string[][];
   currentMove: number;
   handleClick: QRL<(this: SquareStore, index: number) => void>;
@@ -24,7 +23,6 @@ type SquareStore = {
 export default component$(() => {
   const state = useStore<SquareStore>({
     squares: Array(9).fill(""),
-    xIsNext: true,
     history: [Array(9).fill("")],
     currentMove: 0,
     handleClick: $(function (this: SquareStore, index: number) {
@@ -32,7 +30,8 @@ export default component$(() => {
         return;
       }
       const nextSquares = this.squares.slice();
-      if (this.xIsNext) {
+      const xIsNext = this.currentMove % 2 === 0;
+      if (xIsNext) {
         nextSquares[index] = "X";
       } else {
         nextSquares[index] = "O";
@@ -47,11 +46,9 @@ export default component$(() => {
       this.history = nextHistory;
       this.currentMove = nextHistory.length - 1;
       this.squares = nextSquares;
-      this.xIsNext = !this.xIsNext;
     }),
     jumpTo: $(function (this: SquareStore, move: number) {
       this.currentMove = move;
-      this.xIsNext = move % 2 === 0;
       this.squares = this.history[move];
     }),
   });
@@ -91,7 +88,7 @@ const Board = component$<BoardProps>(({ state }) => {
   const winner = calculateWinner(state.squares);
   const status = winner
     ? "Winner: " + winner
-    : "Next player: " + (state.xIsNext ? "X" : "O");
+    : "Next player: " + (state.currentMove % 2 === 0 ? "X" : "O");
 
   return (
     <>
