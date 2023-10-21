@@ -14,7 +14,9 @@ export const head: DocumentHead = {
 type SquareStore = {
   squares: string[];
   xIsNext: boolean;
+  history: string[][];
   handleClick: QRL<(this: SquareStore, index: number) => void>;
+  handlePlay: QRL<(this: SquareStore, nextSquares: string[]) => void>;
 };
 
 export default component$(() => {
@@ -25,15 +27,41 @@ export default component$(() => {
       if (this.squares[index] || calculateWinner(this.squares)) {
         return;
       }
+      const nextSquares = this.squares.slice();
       if (this.xIsNext) {
-        this.squares[index] = "X";
+        nextSquares[index] = "X";
       } else {
-        this.squares[index] = "O";
+        nextSquares[index] = "O";
       }
+      this.handlePlay(nextSquares);
+    }),
+
+    history: [Array(9).fill("")],
+    handlePlay: $(function (this: SquareStore, nextSquares: string[]) {
+      this.history = [...this.history, nextSquares];
       this.xIsNext = !this.xIsNext;
+      this.squares = nextSquares;
     }),
   });
 
+  return (
+    <div class="game">
+      <div class="game-board">
+        <Board state={state} />
+      </div>
+      <div class="game-info">
+        <ol>{/*TODO*/}</ol>
+      </div>
+    </div>
+  );
+});
+
+// 直接storeを渡さないと、更新できない
+interface BoardProps {
+  state: SquareStore;
+}
+
+const Board = component$<BoardProps>(({ state }) => {
   const winner = calculateWinner(state.squares);
   const status = winner
     ? "Winner: " + winner
