@@ -44,13 +44,27 @@ export default component$(() => {
     }),
   });
 
+  const moves = state.history.map((squares, move) => {
+    let description;
+    if (move > 0) {
+      description = "Go to move #" + move;
+    } else {
+      description = "Go to game start";
+    }
+    return (
+      <li key={move}>
+        <button onClick$={() => console.log(move)}>{description}</button>
+      </li>
+    );
+  });
+
   return (
     <div class="game">
       <div class="game-board">
         <Board state={state} />
       </div>
       <div class="game-info">
-        <ol>{/*TODO*/}</ol>
+        <ol>{moves}</ol>
       </div>
     </div>
   );
