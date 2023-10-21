@@ -9,11 +9,11 @@ export default component$(() => {
     <footer>
       <div class="container">
         <a
-          href="https://github.com/ryo-manba"
+          href="https://github.com/ryo-manba/qwik-tic-tac-toe"
           target="_blank"
           class={styles.anchor}
         >
-          <span>Made with ♡ by ryo-manba</span>
+          <span>Made with Qwik by ryo-manba</span>
           <span class={styles.spacer}>|</span>
           <span>{serverTime.value.date}</span>
         </a>
