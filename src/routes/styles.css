@@ -198,6 +198,7 @@ button.button-small {
 
 .status {
   margin-bottom: 20px;
+  font-size: 1.4rem;
 }
 
 .square {
@@ -207,7 +208,7 @@ button.button-small {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2em
+  font-size: 3em
 }
 
 .game {
