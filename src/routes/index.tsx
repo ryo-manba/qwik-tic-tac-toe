@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 
 export const head: DocumentHead = {
@@ -15,28 +15,29 @@ export default component$(() => {
   return (
     <>
       <div class="board-row">
-        <Square value="1" />
-        <Square value="2" />
-        <Square value="3" />
+        <Square />
+        <Square />
+        <Square />
       </div>
       <div class="board-row">
-        <Square value="4" />
-        <Square value="5" />
-        <Square value="6" />
+        <Square />
+        <Square />
+        <Square />
       </div>
       <div class="board-row">
-        <Square value="7" />
-        <Square value="8" />
-        <Square value="9" />
+        <Square />
+        <Square />
+        <Square />
       </div>
     </>
   );
 });
 
-interface SquareProps {
-  value: string;
-}
-
-const Square = component$<SquareProps>(({ value }) => {
-  return <button class="square">{value}</button>;
+const Square = component$(() => {
+  const data = useSignal("");
+  return (
+    <button class="square" onClick$={() => (data.value = "X")}>
+      {data}
+    </button>
+  );
 });
